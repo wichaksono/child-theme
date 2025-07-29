@@ -1,0 +1,1 @@
+<?php // Comments are disabled ?>
