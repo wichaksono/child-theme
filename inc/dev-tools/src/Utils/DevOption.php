@@ -1,6 +1,8 @@
 <?php
 namespace NeonWebId\DevTools\Utils;
 
+use function update_option;
+
 final class DevOption
 {
     private string $name;
@@ -47,6 +49,11 @@ final class DevOption
         update_option($this->name, self::$optionValues);
     }
 
+    public function setBatch(array $options):void
+    {
+        update_option($this->name, $options);
+    }
+
     public function delete(string $key): void
     {
         if (isset(self::$optionValues[$key])) {
@@ -54,4 +61,16 @@ final class DevOption
             update_option($this->name, self::$optionValues);
         }
     }
+
+    public function getAll(): array
+    {
+        return self::$optionValues;
+    }
+
+    public function clear(): void
+    {
+        self::$optionValues = [];
+        update_option($this->name, []);
+    }
+
 }

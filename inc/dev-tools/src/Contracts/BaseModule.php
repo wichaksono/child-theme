@@ -5,7 +5,7 @@ namespace NeonWebId\DevTools\Contracts;
 use NeonWebId\DevTools\Utils\DevOption;
 use NeonWebId\DevTools\Utils\View;
 
-abstract class Base
+abstract class BaseModule
 {
     protected View $view;
 
@@ -23,6 +23,8 @@ abstract class Base
 
     abstract public function content(): void;
 
+    abstract public function apply():void;
+
     public function __construct(View $view, DevOption $option)
     {
         $this->view   = $view;
@@ -38,4 +40,5 @@ abstract class Base
     {
         return $this->fieldValue = $this->option->get($this->id() . '.' . $name, $default);
     }
+
 }

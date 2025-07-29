@@ -2,9 +2,9 @@
 
 namespace NeonWebId\DevTools\Modules;
 
-use NeonWebId\DevTools\Contracts\Base;
+use NeonWebId\DevTools\Contracts\BaseModule;
 
-final class Brand extends Base
+final class Brand extends BaseModule
 {
 
     public function id(): string
@@ -14,7 +14,7 @@ final class Brand extends Base
 
     public function title(): string
     {
-        return __('Brand', 'dev-tools');
+        return __('Brand Settings', 'dev-tools');
     }
 
     public function name(): string
@@ -25,5 +25,10 @@ final class Brand extends Base
     public function content(): void
     {
         echo $this->fieldName('logo');
+    }
+
+    public function apply(): void
+    {
+        // TODO: Implement apply() method.
     }
 }
