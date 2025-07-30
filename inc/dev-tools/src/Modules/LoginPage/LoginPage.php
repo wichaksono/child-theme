@@ -1,30 +1,29 @@
 <?php
 
-namespace NeonWebId\DevTools\Modules;
+namespace NeonWebId\DevTools\Modules\LoginPage;
 
 use NeonWebId\DevTools\Contracts\BaseModule;
 
-final class Brand extends BaseModule
+final class LoginPage extends BaseModule
 {
-
     public function id(): string
     {
-        return 'brand';
+        // TODO: Implement id() method.
     }
 
     public function title(): string
     {
-        return __('Brand Settings', 'dev-tools');
+        // TODO: Implement title() method.
     }
 
     public function name(): string
     {
-        return 'Brand';
+        // TODO: Implement name() method.
     }
 
     public function content(): void
     {
-
+        // TODO: Implement content() method.
     }
 
     public function apply(): void

@@ -1,7 +1,7 @@
 <?php
 
 use NeonWebId\DevTools\Contracts\BaseModule;
-use NeonWebId\DevTools\Modules\Brand;
+use NeonWebId\DevTools\Modules\Brand\Brand;
 use NeonWebId\DevTools\Modules\TelegramNotify\TelegramNotify;
 use NeonWebId\DevTools\Modules\Utilities\Utilities;
 use NeonWebId\DevTools\Utils\Panel;

@@ -1,4 +1,5 @@
 <?php
+
 namespace NeonWebId\DevTools\Utils;
 
 use function update_option;
@@ -71,7 +72,7 @@ final class DevOption
      *
      * @return string The name of the option.
      */
-    public function getName():string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -80,7 +81,7 @@ final class DevOption
      * Get the value of an option by key.
      *
      * @param string $key The key of the option.
-     * @param mixed  $default The default value to return if the key does not exist.
+     * @param mixed $default The default value to return if the key does not exist.
      *
      * @return mixed The value of the option or the default value.
      */
@@ -93,7 +94,7 @@ final class DevOption
      * Set the value of an option by key.
      *
      * @param string $key The key of the option.
-     * @param mixed  $value The value to set for the option.
+     * @param mixed $value The value to set for the option.
      *
      * @return void
      */
@@ -110,7 +111,7 @@ final class DevOption
      *
      * @return void
      */
-    public function setBatch(array $options):void
+    public function setBatch(array $options): void
     {
         update_option($this->name, $options);
     }
@@ -152,6 +153,30 @@ final class DevOption
     {
         self::$optionValues = [];
         update_option($this->name, []);
+    }
+
+    private array $temp_repeater_values = [];
+
+    /**
+     * Menyimpan nilai sementara untuk sub-field repeater.
+     *
+     * @param string $key   ID dari sub-field (misalnya, 'name', 'date').
+     * @param mixed  $value Nilai dari sub-field tersebut.
+     */
+    public function setTempRepeaterValue(string $key, mixed $value): void
+    {
+        $this->temp_repeater_values[$key] = $value;
+    }
+
+    /**
+     * Mengambil nilai sementara untuk sub-field repeater.
+     *
+     * @param string $key ID dari sub-field.
+     * @return mixed|null Nilai yang disimpan atau null jika tidak ada.
+     */
+    public function getTempRepeaterValue(string $key): mixed
+    {
+        return $this->temp_repeater_values[$key] ?? null;
     }
 
 }
