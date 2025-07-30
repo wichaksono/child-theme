@@ -83,12 +83,24 @@ abstract class BaseModule
      * @param View $view The view instance for rendering the module.
      * @param DevOption $option The DevOption instance for managing options.
      */
-    public function __construct(View $view, DevOption $option)
+    final public function __construct(View $view, DevOption $option)
     {
         $this->view   = $view;
         $this->option = $option;
         $prefixName   = $this->option->getName();
         $this->field  = new Field($this->option, $prefixName, $this->id());
+
+        $this->onContructor();
+    }
+
+    /**
+     * Method to be called in the constructor of the module.
+     *
+     * This method can be overridden in subclasses to perform additional initialization.
+     */
+    protected function onContructor(): void
+    {
+        // Default implementation does nothing.
     }
 
     /**
