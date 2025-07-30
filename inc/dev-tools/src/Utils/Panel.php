@@ -331,6 +331,17 @@ class Panel
                 );
             }
         }
+
+        if ($this->isDevMode || $this->userCanSeePanel) {
+            add_submenu_page(
+                $this->page_slug,
+                'System Info',
+                'System Info',
+                'manage_options',
+                add_query_arg(['page' => $this->page_slug, 'tab' => 'system-info'], 'admin.php'),
+                ''
+            );
+        }
     }
 
     /**
@@ -371,6 +382,11 @@ class Panel
                     <?php endif; ?>
 
                 <?php endforeach; ?>
+
+                <?php if ($this->isDevMode || $this->userCanSeePanel) : ?>
+                    <a href="<?php echo esc_url(add_query_arg(['page' => $this->page_slug, 'tab' => 'system-info'], admin_url('admin.php'))); ?>"
+                       class="nav-tab <?php echo($active_tab === 'system-info' ? 'nav-tab-active' : ''); ?>">System Info</a>
+                <?php endif; ?>
             </h2>
 
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -391,6 +407,14 @@ class Panel
                     ) : ?>
                         <h3><?php echo esc_html($this->modules[$active_tab]->title()); ?></h3>
                         <?php $this->modules[$active_tab]->content(); ?>
+                    <?php elseif ($active_tab === 'system-info'): ?>
+                        <h3><?php echo esc_html('System Information'); ?></h3>
+                        <?php
+                        $this->view->render('system-info', [
+                            'theme' => wp_get_theme(),
+                            'plugins' => get_option('active_plugins', [])
+                        ]);
+                        ?>
                     <?php else: ?>
                         <div class="notice notice-error">
                             <p><?php echo esc_html('The requested tab does not exist or is not accessible.'); ?></p>
@@ -398,7 +422,7 @@ class Panel
                     <?php endif; ?>
                 </div>
 
-                <?php if ($active_tab !== 'general') : ?>
+                <?php if ( ! in_array($active_tab ,['general', 'system-info']) ) : ?>
                     <?php submit_button(); ?>
                 <?php endif; ?>
             </form>
