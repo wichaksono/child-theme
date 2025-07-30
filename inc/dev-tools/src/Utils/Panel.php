@@ -20,12 +20,10 @@ use function esc_url;
 use function get_stylesheet_directory;
 use function get_stylesheet_directory_uri;
 use function in_array;
-use function is_admin;
 use function is_user_logged_in;
 use function sanitize_key;
 use function strtolower;
 use function submit_button;
-use function var_dump;
 use function wp_die;
 use function wp_enqueue_media;
 use function wp_enqueue_script;
@@ -112,9 +110,32 @@ class Panel
      */
     private array $showPanelFor = [];
 
+    /**
+     * Indicates whether the panel is in development mode.
+     * This is true if WP_DEBUG is enabled or if the user is allowed to see the panel.
+     * @var bool
+     */
     private bool $isDevMode = false;
 
+    /**
+     * Indicates whether the current user can see the panel.
+     * This is determined by the `showPanelFor` array or if WP_DEBUG is true.
+     * @var bool
+     */
     private bool $userCanSeePanel = false;
+
+    /**
+     * The general settings tab configuration.
+     * This is used to render the general settings view.
+     * It includes the title, name, and view file for the general settings tab.
+     *
+     * @var array
+     */
+    private array $generalTab = [
+        'title' => 'General Settings',
+        'name'  => 'General',
+        'view'  => 'general', // The view file for the general settings tab: views/general.php
+    ];
 
     /**
      * Panel constructor.
@@ -155,6 +176,12 @@ class Panel
         return [];
     }
 
+    /**
+     * Initializes the panel by loading the modules defined in the `modules()` method.
+     * This method is called from the constructor to ensure all modules are ready for use.
+     *
+     * @return void
+     */
     private function initialized(): void
     {
         foreach ($this->modules() as $moduleClass) {
@@ -190,6 +217,23 @@ class Panel
     }
 
     /**
+     * Registers the WordPress hooks for the panel if conditions are met.
+     * The panel is activated if WP_DEBUG is true or if the current user is allowed.
+     *
+     * @return void
+     */
+    private function panelRegistered(): void
+    {
+        if ( ! is_user_logged_in()) {
+            return;
+        }
+
+        add_action('admin_menu', [$this, 'optionsPage']);
+        add_action('admin_post_' . $this->page_slug, [$this, 'save']);
+        add_action('admin_enqueue_scripts', [$this, 'scripts']);
+    }
+
+    /**
      * Sets the list of users (by username or email) who are allowed to see the panel.
      *
      * @param string[] $usernamesOrEmails An array of usernames or emails.
@@ -199,6 +243,22 @@ class Panel
     final public function showPanelFor(array $usernamesOrEmails): void
     {
         $this->showPanelFor = array_map('strtolower', $usernamesOrEmails);
+    }
+
+    /**
+     * Sets the general tab configuration for the panel.
+     * This method allows customization of the general settings tab.
+     *
+     * @param array $tab An associative array with keys 'title', 'name', and 'view'.
+     *                   - 'title': The title of the tab.
+     *                   - 'name': The name of the tab.
+     *                   - 'view': The view file to render for this tab.
+     *
+     * @return void
+     */
+    final public function setGeneralTab(array $tab): void
+    {
+        $this->generalTab = array_merge($this->generalTab, $tab);
     }
 
     /**
@@ -237,8 +297,8 @@ class Panel
 
         add_submenu_page(
             $this->page_slug,
-            'General',
-            'General',
+            $this->generalTab['title'],
+            $this->generalTab['name'],
             'manage_options',
             $this->page_slug,
             [$this, 'renderPage']
@@ -267,7 +327,6 @@ class Panel
      */
     final public function renderPage(): void
     {
-        $options    = $this->option->getAll() ?: [];
         $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'general';
         ?>
         <div class="wrap">
@@ -280,11 +339,11 @@ class Panel
 
             <h2 class="nav-tab-wrapper">
                 <?php
-                $general_tab_url = add_query_arg(['page' => $this->page_slug, 'tab' => 'general'],
+                $general_tab_url = add_query_arg(['page' => $this->page_slug],
                     admin_url('admin.php'));
                 ?>
                 <a href="<?php echo esc_url($general_tab_url); ?>"
-                   class="nav-tab <?php echo($active_tab === 'general' ? 'nav-tab-active' : ''); ?>">General</a>
+                   class="nav-tab <?php echo($active_tab === 'general' ? 'nav-tab-active' : ''); ?>"><?php echo $this->generalTab['name'];?></a>
 
                 <?php
                 foreach ($this->modules as $module):
@@ -307,12 +366,14 @@ class Panel
 
                 <div class="tab-content">
                     <?php if ($active_tab === 'general') : ?>
-                        <h3>General</h3>
-                        <?php $this->view->render('general'); ?>
+                        <h3><?php echo $this->generalTab['title'];?></h3>
+                        <?php $this->view->render($this->generalTab['view']); ?>
                     <?php elseif (
                         isset($this->modules[$active_tab])
-                        && $this->modules[$active_tab] instanceof BaseModule
-                        && ( $this->isDevMode || $this->userCanSeePanel || $this->modules[$active_tab]->shouldAlwaysShow() )
+                        &&
+                        $this->modules[$active_tab] instanceof BaseModule
+                        &&
+                        ($this->isDevMode || $this->userCanSeePanel || $this->modules[$active_tab]->shouldAlwaysShow())
                     ) : ?>
                         <h3><?php echo esc_html($this->modules[$active_tab]->title()); ?></h3>
                         <?php $this->modules[$active_tab]->content(); ?>
@@ -324,7 +385,7 @@ class Panel
                 </div>
 
                 <?php if ($active_tab !== 'general') : ?>
-                <?php submit_button(); ?>
+                    <?php submit_button(); ?>
                 <?php endif; ?>
             </form>
         </div>
@@ -385,22 +446,5 @@ class Panel
         }
 
         $this->updater?->init();
-    }
-
-    /**
-     * Registers the WordPress hooks for the panel if conditions are met.
-     * The panel is activated if WP_DEBUG is true or if the current user is allowed.
-     *
-     * @return void
-     */
-    private function panelRegistered(): void
-    {
-        if ( ! is_user_logged_in()) {
-            return;
-        }
-
-        add_action('admin_menu', [$this, 'optionsPage']);
-        add_action('admin_post_' . $this->page_slug, [$this, 'save']);
-        add_action('admin_enqueue_scripts', [$this, 'scripts']);
     }
 }

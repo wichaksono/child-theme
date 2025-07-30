@@ -1,5 +1,14 @@
-<h3>Informasi Kontak</h3>
-
+<?php
+/**
+ * General View Content
+ *
+ * This file is part of the Dev Tools plugin for WordPress.
+ *
+ * @package Dev Tools
+ * @subpackage Views
+ */
+defined('ABSPATH') || exit;
+?>
 <p>Silakan hubungi kami melalui informasi berikut:</p>
 
 <ul>
