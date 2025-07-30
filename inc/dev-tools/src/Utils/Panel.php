@@ -23,7 +23,6 @@ use function in_array;
 use function is_admin;
 use function is_user_logged_in;
 use function key;
-use function print_r;
 use function sanitize_key;
 use function strtolower;
 use function submit_button;
@@ -289,7 +288,6 @@ class Panel
      */
     final public function scripts(string $hook_suffix): void
     {
-
         if (str_contains($hook_suffix, $this->page_slug)) {
             wp_enqueue_media();
 
@@ -356,25 +354,31 @@ class Panel
 
         foreach ($this->modules as $module) {
             if ($this->isDevMode || $this->userCanSeePanel || $module->shouldAlwaysShow()) {
-                add_submenu_page(
-                    $this->page_slug,
+                $urlSubPage = add_query_arg([
+                    'page' => $this->page_slug,
+                    'tab'  => $module->id()
+                ], 'admin.php');
+                add_submenu_page($this->page_slug,
                     $module->title(),
                     $module->name(),
                     'manage_options',
-                    // URL slug for the submenu
-                    add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()], 'admin.php'),
+                    $urlSubPage,
                     ''
                 );
             }
         }
 
         if ($this->isDevMode || $this->userCanSeePanel) {
+            $urlSubPage = add_query_arg([
+                'page' => $this->page_slug,
+                'tab'  => 'system-info'
+            ], 'admin.php');
             add_submenu_page(
                 $this->page_slug,
                 'System Info',
                 'System Info',
                 'manage_options',
-                add_query_arg(['page' => $this->page_slug, 'tab' => 'system-info'], 'admin.php'),
+                $urlSubPage,
                 ''
             );
         }
@@ -401,19 +405,20 @@ class Panel
             <h2 class="nav-tab-wrapper">
                 <?php
                 $general_tab_url = add_query_arg([
-                        'page' => $this->page_slug
+                    'page' => $this->page_slug
                 ], admin_url('admin.php'));
                 ?>
                 <a href="<?php echo esc_url($general_tab_url); ?>"
-                   class="nav-tab <?php echo($active_tab === 'general' ? 'nav-tab-active' : ''); ?>"><?php echo $this->generalTab['name'];?></a>
+                   class="nav-tab <?php echo($active_tab ===
+                   'general' ? 'nav-tab-active' : ''); ?>"><?php echo $this->generalTab['name']; ?></a>
 
                 <?php
                 foreach ($this->modules as $module):
                     if ($this->isDevMode || $this->userCanSeePanel || $module->shouldAlwaysShow()) :
 
                         $module_tab_url = add_query_arg([
-                                'page' => $this->page_slug,
-                                'tab' => $module->id()
+                            'page' => $this->page_slug,
+                            'tab'  => $module->id()
                         ], admin_url('admin.php')); ?>
                         <a href="<?php echo esc_url($module_tab_url); ?>"
                            class="nav-tab <?php echo($active_tab ===
@@ -423,8 +428,10 @@ class Panel
                 <?php endforeach; ?>
 
                 <?php if ($this->isDevMode || $this->userCanSeePanel) : ?>
-                    <a href="<?php echo esc_url(add_query_arg(['page' => $this->page_slug, 'tab' => 'system-info'], admin_url('admin.php'))); ?>"
-                       class="nav-tab <?php echo($active_tab === 'system-info' ? 'nav-tab-active' : ''); ?>">System Info</a>
+                    <a href="<?php echo esc_url(add_query_arg(['page' => $this->page_slug, 'tab' => 'system-info'],
+                        admin_url('admin.php'))); ?>"
+                       class="nav-tab <?php echo($active_tab === 'system-info' ? 'nav-tab-active' : ''); ?>">System
+                        Info</a>
                 <?php endif; ?>
             </h2>
 
@@ -435,7 +442,7 @@ class Panel
 
                 <div class="tab-content">
                     <?php if ($active_tab === 'general') : ?>
-                        <h3><?php echo $this->generalTab['title'];?></h3>
+                        <h3><?php echo $this->generalTab['title']; ?></h3>
                         <?php $this->view->render($this->generalTab['view']); ?>
                     <?php elseif (
                         isset($this->modules[$active_tab])
@@ -450,7 +457,7 @@ class Panel
                         <h3><?php echo esc_html('System Information'); ?></h3>
                         <?php
                         $this->view->render('system-info', [
-                            'theme' => wp_get_theme(),
+                            'theme'   => wp_get_theme(),
                             'plugins' => get_option('active_plugins', [])
                         ]);
                         ?>
@@ -461,7 +468,7 @@ class Panel
                     <?php endif; ?>
                 </div>
 
-                <?php if ( ! in_array($active_tab ,['general', 'system-info']) ) : ?>
+                <?php if ( ! in_array($active_tab, ['general', 'system-info'])) : ?>
                     <?php submit_button(); ?>
                 <?php endif; ?>
             </form>
@@ -478,7 +485,6 @@ class Panel
     #[NoReturn]
     final public function save(): void
     {
-
         if ( ! isset($_POST[$this->nonce . '_nonce']) ||
             ! wp_verify_nonce($_POST[$this->nonce . '_nonce'], 'my_theme_save_options_action')
         ) {
@@ -501,10 +507,10 @@ class Panel
         );
 
         // Merge the submitted data with existing options.
-        if ( isset($_POST['_dev_tools']) && is_array($_POST['_dev_tools']) ) {
+        if (isset($_POST['_dev_tools']) && is_array($_POST['_dev_tools'])) {
             $postData = wp_slash($_POST['_dev_tools']);
-            if ( !empty($postData) ) {
-                $id = key($postData);
+            if ( ! empty($postData)) {
+                $id           = key($postData);
                 $options[$id] = $postData[$id];
             }
 
@@ -538,7 +544,7 @@ class Panel
 
         $this->updater?->init();
 
-        if (! is_admin() ) {
+        if ( ! is_admin()) {
             return;
         }
 
