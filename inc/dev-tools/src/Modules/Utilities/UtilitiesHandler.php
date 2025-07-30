@@ -142,9 +142,19 @@ final class UtilitiesHandler
      */
     private function handleDisableUpdates(): void
     {
-        add_filter('pre_site_transient_update_core', '__return_null');
-        add_filter('pre_site_transient_update_plugins', '__return_null');
-        add_filter('pre_site_transient_update_themes', '__return_null');
+        add_filter('pre_site_transient_update_core', [$this, 'removeCoreUpdates']);
+        add_filter('pre_site_transient_update_plugins', [$this, 'removeCoreUpdates']);
+        add_filter('pre_site_transient_update_themes', [$this, 'removeCoreUpdates']);
+    }
+
+    public function removeCoreUpdates(): object
+    {
+        global $wp_version;
+        return (object)array(
+            'last_checked'    => time(),
+            'version_checked' => $wp_version,
+            'updates'         => array()
+        );
     }
 
     /**

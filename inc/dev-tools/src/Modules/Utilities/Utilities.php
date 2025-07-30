@@ -33,11 +33,6 @@ final class Utilities extends BaseModule
 
     public function apply(): void
     {
-        add_action('init', [$this, 'runUtilitiesHandler']);
-    }
-
-    public function runUtilitiesHandler(): void
-    {
         $utilites = $this->option->get('utilities', []);
         if (empty($utilites)) {
             return;
