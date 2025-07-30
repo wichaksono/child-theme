@@ -400,8 +400,9 @@ class Panel
 
             <h2 class="nav-tab-wrapper">
                 <?php
-                $general_tab_url = add_query_arg(['page' => $this->page_slug],
-                    admin_url('admin.php'));
+                $general_tab_url = add_query_arg([
+                        'page' => $this->page_slug
+                ], admin_url('admin.php'));
                 ?>
                 <a href="<?php echo esc_url($general_tab_url); ?>"
                    class="nav-tab <?php echo($active_tab === 'general' ? 'nav-tab-active' : ''); ?>"><?php echo $this->generalTab['name'];?></a>
@@ -409,9 +410,11 @@ class Panel
                 <?php
                 foreach ($this->modules as $module):
                     if ($this->isDevMode || $this->userCanSeePanel || $module->shouldAlwaysShow()) :
-                        $module_tab_url = add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()],
-                            admin_url('admin.php'));
-                        ?>
+
+                        $module_tab_url = add_query_arg([
+                                'page' => $this->page_slug,
+                                'tab' => $module->id()
+                        ], admin_url('admin.php')); ?>
                         <a href="<?php echo esc_url($module_tab_url); ?>"
                            class="nav-tab <?php echo($active_tab ===
                            $module->id() ? 'nav-tab-active' : ''); ?>"><?php echo esc_html($module->name()); ?></a>
@@ -488,22 +491,35 @@ class Panel
 
         $options = $this->option->getAll() ?: [];
 
-        $postData = wp_slash($_POST['_dev_tools'] ?? []);
-        if ( !empty($postData) ) {
-            $id = key($postData);
-            $options[$id] = $postData[$id];
-        }
-
-        $this->option->setBatch($options);
-
         $redirect_url = add_query_arg(
             [
                 'page'             => $this->page_slug,
                 'tab'              => isset($_POST['active_tab']) ? sanitize_key($_POST['active_tab']) : 'general',
-                'settings-updated' => 'true'
+                'settings-updated' => 'false'
             ],
             admin_url('admin.php')
         );
+
+        // Merge the submitted data with existing options.
+        if ( isset($_POST['_dev_tools']) && is_array($_POST['_dev_tools']) ) {
+            $postData = wp_slash($_POST['_dev_tools']);
+            if ( !empty($postData) ) {
+                $id = key($postData);
+                $options[$id] = $postData[$id];
+            }
+
+            $this->option->setBatch($options);
+
+            $redirect_url = add_query_arg(
+                [
+                    'page'             => $this->page_slug,
+                    'tab'              => isset($_POST['active_tab']) ? sanitize_key($_POST['active_tab']) : 'general',
+                    'settings-updated' => 'true'
+                ],
+                admin_url('admin.php')
+            );
+        }
+
         wp_redirect($redirect_url);
         exit;
     }
