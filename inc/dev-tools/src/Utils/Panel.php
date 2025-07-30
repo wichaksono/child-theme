@@ -6,13 +6,12 @@ use JetBrains\PhpStorm\NoReturn;
 use NeonWebId\DevTools\Contracts\BaseModule;
 use NeonWebId\DevTools\Utils\ThemeUpdater\ThemeUpdater;
 
-use WP_Admin_Bar;
-
 use function add_action;
 use function add_menu_page;
 use function add_query_arg;
 use function add_submenu_page;
 use function admin_url;
+use function class_exists;
 use function current_user_can;
 use function defined;
 use function esc_attr;
@@ -20,11 +19,13 @@ use function esc_html;
 use function esc_url;
 use function get_stylesheet_directory;
 use function get_stylesheet_directory_uri;
-use function get_stylesheet_uri;
 use function in_array;
 use function is_admin;
+use function is_user_logged_in;
 use function sanitize_key;
+use function strtolower;
 use function submit_button;
+use function var_dump;
 use function wp_die;
 use function wp_enqueue_media;
 use function wp_enqueue_script;
@@ -113,6 +114,8 @@ class Panel
 
     private bool $isDevMode = false;
 
+    private bool $userCanSeePanel = false;
+
     /**
      * Panel constructor.
      * Declared final to prevent overriding. Initializes dependencies and boots the modules.
@@ -127,7 +130,7 @@ class Panel
 
         $this->onConstruct();
 
-        $this->boot();
+        $this->initialized();
     }
 
     /**
@@ -152,13 +155,7 @@ class Panel
         return [];
     }
 
-    /**
-     * Boots the panel by instantiating and storing the registered modules.
-     * This method is called from the constructor.
-     *
-     * @return void
-     */
-    private function boot(): void
+    private function initialized(): void
     {
         foreach ($this->modules() as $moduleClass) {
             if (class_exists($moduleClass)) {
@@ -167,6 +164,28 @@ class Panel
                     $this->modules[$module->id()] = $module;
                 }
             }
+        }
+    }
+
+    /**
+     * Boots the panel by instantiating and storing the registered modules.
+     * This method is called from the constructor.
+     *
+     * @return void
+     */
+    private function boot(): void
+    {
+        $this->isDevMode = defined('WP_DEBUG') && WP_DEBUG === true;
+
+        if ($this->showPanelFor === []) {
+            $this->userCanSeePanel = $this->isDevMode;
+        } else {
+            $user      = wp_get_current_user();
+            $userLogin = strtolower($user->user_login);
+            $userEmail = strtolower($user->user_email);
+
+            $this->userCanSeePanel = in_array($userLogin, $this->showPanelFor, true)
+                || in_array($userEmail, $this->showPanelFor, true);
         }
     }
 
@@ -192,11 +211,11 @@ class Panel
      */
     final public function scripts(string $hook_suffix): void
     {
+        wp_enqueue_style($this->page_slug, $this->view->getAsset('/css/admin.css'));
         if (str_contains($hook_suffix, $this->page_slug)) {
-            wp_enqueue_style($this->page_slug, $this->view->getAsset('/css/admin.css'));
             wp_enqueue_media();
-            wp_enqueue_script($this->page_slug, $this->view->getAsset('js/admin.js'), ['jquery'], null, true);
         }
+        wp_enqueue_script($this->page_slug, $this->view->getAsset('js/admin.js'), ['jquery'], null, true);
     }
 
     /**
@@ -226,15 +245,17 @@ class Panel
         );
 
         foreach ($this->modules as $module) {
-            add_submenu_page(
-                $this->page_slug,
-                $module->title(),
-                $module->name(),
-                'manage_options',
-                // URL slug for the submenu
-                add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()], 'admin.php'),
-                ''
-            );
+            if ($this->isDevMode || $this->userCanSeePanel || $module->shouldAlwaysShow()) {
+                add_submenu_page(
+                    $this->page_slug,
+                    $module->title(),
+                    $module->name(),
+                    'manage_options',
+                    // URL slug for the submenu
+                    add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()], 'admin.php'),
+                    ''
+                );
+            }
         }
     }
 
@@ -267,12 +288,15 @@ class Panel
 
                 <?php
                 foreach ($this->modules as $module):
-                    $module_tab_url = add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()],
-                        admin_url('admin.php'));
-                    ?>
-                    <a href="<?php echo esc_url($module_tab_url); ?>"
-                       class="nav-tab <?php echo($active_tab ===
-                       $module->id() ? 'nav-tab-active' : ''); ?>"><?php echo esc_html($module->name()); ?></a>
+                    if ($this->isDevMode || $this->userCanSeePanel || $module->shouldAlwaysShow()) :
+                        $module_tab_url = add_query_arg(['page' => $this->page_slug, 'tab' => $module->id()],
+                            admin_url('admin.php'));
+                        ?>
+                        <a href="<?php echo esc_url($module_tab_url); ?>"
+                           class="nav-tab <?php echo($active_tab ===
+                           $module->id() ? 'nav-tab-active' : ''); ?>"><?php echo esc_html($module->name()); ?></a>
+                    <?php endif; ?>
+
                 <?php endforeach; ?>
             </h2>
 
@@ -309,9 +333,14 @@ class Panel
                     <?php elseif (
                         isset($this->modules[$active_tab])
                         && $this->modules[$active_tab] instanceof BaseModule
+                        && ( $this->isDevMode || $this->userCanSeePanel || $this->modules[$active_tab]->shouldAlwaysShow() )
                     ) : ?>
                         <h3><?php echo esc_html($this->modules[$active_tab]->title()); ?></h3>
                         <?php $this->modules[$active_tab]->content(); ?>
+                    <?php else: ?>
+                        <div class="notice notice-error">
+                            <p><?php echo esc_html('The requested tab does not exist or is not accessible.'); ?></p>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -366,6 +395,8 @@ class Panel
      */
     final public function apply(): void
     {
+        $this->boot();
+
         $this->panelRegistered();
 
         foreach ($this->modules as $module) {
@@ -383,22 +414,12 @@ class Panel
      */
     private function panelRegistered(): void
     {
-        if ( !is_admin() ) {
+        if ( ! is_user_logged_in()) {
             return;
         }
 
-        $debugMode = defined('WP_DEBUG') && WP_DEBUG === true;
-
-        $user        = wp_get_current_user();
-        $userLogin   = strtolower($user->user_login);
-        $userEmail   = strtolower($user->user_email);
-        $allowedUser = in_array($userLogin, $this->showPanelFor, true)
-            || in_array($userEmail, $this->showPanelFor, true);
-
-        if ($debugMode || $allowedUser) {
-            add_action('admin_menu', [$this, 'optionsPage']);
-            add_action('admin_post_' . $this->page_slug, [$this, 'save']);
-            add_action('admin_enqueue_scripts', [$this, 'scripts']);
-        }
+        add_action('admin_menu', [$this, 'optionsPage']);
+        add_action('admin_post_' . $this->page_slug, [$this, 'save']);
+        add_action('admin_enqueue_scripts', [$this, 'scripts']);
     }
 }

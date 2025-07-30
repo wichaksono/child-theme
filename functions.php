@@ -21,10 +21,10 @@ require_once __DIR__ . '/inc/dev-tools/autoload.php';
 /** @var Panel $devTools */
 $devTools = require_once __DIR__ . '/inc/dev-tools/bootstrap.php';
 
-// $devTools->showPanelFor([
+ $devTools->showPanelFor([
 //     'admin@example.com',
-//     'adminusername',
-// ]);
+//     'admin',
+ ]);
 
 $devTools->apply();
 
