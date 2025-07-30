@@ -21,6 +21,8 @@ use function get_stylesheet_directory;
 use function get_stylesheet_directory_uri;
 use function in_array;
 use function is_user_logged_in;
+use function key;
+use function print_r;
 use function sanitize_key;
 use function strtolower;
 use function submit_button;
@@ -31,6 +33,7 @@ use function wp_enqueue_style;
 use function wp_get_current_user;
 use function wp_nonce_field;
 use function wp_redirect;
+use function wp_slash;
 use function wp_verify_nonce;
 
 /**
@@ -309,6 +312,15 @@ class Panel
                 null,
                 true
             );
+
+            // repeater-field.js
+            wp_enqueue_script(
+                $this->page_slug . '-repeater-field',
+                $this->uri->getAsset('js/repeater-field.js'),
+                ['jquery'],
+                null,
+                true
+            );
         }
 
         wp_enqueue_style($this->page_slug, $this->uri->getAsset('/css/admin.css'));
@@ -462,6 +474,7 @@ class Panel
     #[NoReturn]
     final public function save(): void
     {
+
         if ( ! isset($_POST[$this->nonce . '_nonce']) ||
             ! wp_verify_nonce($_POST[$this->nonce . '_nonce'], 'my_theme_save_options_action')
         ) {
@@ -474,7 +487,11 @@ class Panel
 
         $options = $this->option->getAll() ?: [];
 
-        // TODO: Add sanitization logic for data from $_POST before saving.
+        $postData = wp_slash($_POST['_dev_tools'] ?? []);
+        if ( !empty($postData) ) {
+            $id = key($postData);
+            $options[$id] = $postData[$id];
+        }
 
         $this->option->setBatch($options);
 

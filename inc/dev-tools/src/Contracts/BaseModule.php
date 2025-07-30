@@ -75,7 +75,7 @@ abstract class BaseModule
      *
      * @return void
      */
-    abstract public function apply():void;
+    abstract public function apply(): void;
 
     /**
      * BaseModule constructor.
@@ -87,7 +87,8 @@ abstract class BaseModule
     {
         $this->view   = $view;
         $this->option = $option;
-        $this->field  = new Field($this->option);
+        $prefixName   = $this->option->getName();
+        $this->field  = new Field($this->option, $prefixName, $this->id());
     }
 
     /**
@@ -97,7 +98,7 @@ abstract class BaseModule
      *
      * @return bool True if the module should always be shown, false otherwise.
      */
-    public function shouldAlwaysShow():bool
+    public function shouldAlwaysShow(): bool
     {
         return false;
     }

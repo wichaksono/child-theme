@@ -4,6 +4,9 @@ namespace NeonWebId\DevTools\Modules\Utilities;
 
 use NeonWebId\DevTools\Contracts\BaseModule;
 
+use function print_r;
+use function var_dump;
+
 final class Utilitites extends BaseModule
 {
     public function id(): string
