@@ -308,28 +308,7 @@ class Panel
                 <div class="tab-content">
                     <?php if ($active_tab === 'general') : ?>
                         <h3>General</h3>
-                        <table class="form-table">
-                            <tbody>
-                            <tr>
-                                <th scope="row"><label for="site_description">Site Description</label></th>
-                                <td>
-                                    <input type="text" id="site_description" name="site_description"
-                                           value="<?php echo isset($options['site_description']) ? esc_attr($options['site_description']) : ''; ?>"
-                                           class="regular-text">
-                                    <p class="description">Enter a short description for your site.</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><label for="copyright_text">Copyright Text</label></th>
-                                <td>
-                                    <input type="text" id="copyright_text" name="copyright_text"
-                                           value="<?php echo isset($options['copyright_text']) ? esc_attr($options['copyright_text']) : ''; ?>"
-                                           class="regular-text">
-                                    <p class="description">Enter the copyright text for the footer.</p>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <?php $this->view->render('general'); ?>
                     <?php elseif (
                         isset($this->modules[$active_tab])
                         && $this->modules[$active_tab] instanceof BaseModule
@@ -344,7 +323,9 @@ class Panel
                     <?php endif; ?>
                 </div>
 
+                <?php if ($active_tab !== 'general') : ?>
                 <?php submit_button(); ?>
+                <?php endif; ?>
             </form>
         </div>
         <?php
