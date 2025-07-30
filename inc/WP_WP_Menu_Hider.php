@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * Manages the custom admin menu page for selecting menu and submenu items.
  * Designed to be used within a theme's functions.php.
  */
-class MenuSelectorHandler {
+class WP_Menu_Hider {
 
     /**
      * @var string Stores the message to be displayed (success/error).
@@ -565,4 +565,4 @@ class MenuSelectorHandler {
     }
 }
 
-new MenuSelectorHandler();
+new WP_Menu_Hider();

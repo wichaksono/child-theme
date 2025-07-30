@@ -2,7 +2,7 @@
 /**
  * Class for customizing the WordPress admin bar brand and dashboard.
  */
-class WpAdminBrandCustomizer {
+class WPAdminBrand {
 
     /**
      * @var string The URL of the custom image to be used as the admin bar logo.
@@ -471,7 +471,7 @@ class WpAdminBrandCustomizer {
 // new WpAdminBrandCustomizer();
 
 // To use custom settings, including a custom dashboard:
-new WpAdminBrandCustomizer([
+new WPAdminBrand([
     'admin_brand_text'      => 'Admin Perusahaan Saya', // Custom text for the admin bar
     'admin_brand_link_url'  => 'https://example.com/dashboard-kustom/', // Custom URL for the admin bar link
     'admin_footer_text'     => 'Ditenagai oleh Perusahaan Saya. Semua Hak Dilindungi.', // Custom text for the admin footer (left side)

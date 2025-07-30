@@ -2,7 +2,7 @@
 /**
  * Class for customizing the WordPress login page.
  */
-class WpLoginCustomizer {
+class WPLogin {
 
     /**
      * @var string The background color for the login form.
@@ -233,7 +233,7 @@ class WpLoginCustomizer {
 // new WpLoginCustomizer();
 
 // To use custom settings:
-new WpLoginCustomizer([
+new WPLogin([
     'login_form_background' => '#e0f2f7', // Light blue background for form
     'text_label_color'      => '#1a73e8', // Google Blue for links
     'button_color'          => '#1a73e8', // Google Blue for button
