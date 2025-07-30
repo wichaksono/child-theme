@@ -1,6 +1,6 @@
 <?php
 
-namespace NeonWebId\DevTools\Modules;
+namespace NeonWebId\DevTools\Modules\Utilities;
 
 use NeonWebId\DevTools\Contracts\BaseModule;
 
@@ -8,22 +8,24 @@ final class Utilitites extends BaseModule
 {
     public function id(): string
     {
-        // TODO: Implement id() method.
+        return 'utilities';
     }
 
     public function title(): string
     {
-        // TODO: Implement title() method.
+        return __('Utilities', 'dev-tools');
     }
 
     public function name(): string
     {
-        // TODO: Implement name() method.
+        return __('Utilities', 'dev-tools');
     }
 
     public function content(): void
     {
-        // TODO: Implement content() method.
+        $this->view->render('utilities/utilities', [
+            'field' => $this->field
+        ]);
     }
 
     public function apply(): void

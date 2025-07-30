@@ -3,6 +3,7 @@
 namespace NeonWebId\DevTools\Contracts;
 
 use NeonWebId\DevTools\Utils\DevOption;
+use NeonWebId\DevTools\Utils\Field;
 use NeonWebId\DevTools\Utils\View;
 
 abstract class BaseModule
@@ -20,6 +21,8 @@ abstract class BaseModule
      * @var DevOption
      */
     protected DevOption $option;
+
+    protected Field $field;
 
     /**
      * The name of the field in the module.
@@ -84,6 +87,7 @@ abstract class BaseModule
     {
         $this->view   = $view;
         $this->option = $option;
+        $this->field  = new Field($this->option);
     }
 
     /**
@@ -97,33 +101,4 @@ abstract class BaseModule
     {
         return false;
     }
-
-    /**
-     * Get the field name for a specific option in the module.
-     *
-     * @param string $name The name of the option.
-     *
-     * @return string The full field name including the module ID and option name.
-     */
-    protected function fieldName(string $name): string
-    {
-        return $this->fieldName = $this->option->getName() . '[' . $this->id() . '][' . $name . ']';
-    }
-
-    /**
-     * Get the value of a specific field in the module.
-     *
-     * This method retrieves the value of a field from the DevOption instance,
-     * using the module ID and field name as the key.
-     *
-     * @param string $name The name of the field.
-     * @param mixed $default The default value to return if the field is not set.
-     *
-     * @return mixed The value of the field, or the default value if not set.
-     */
-    protected function fieldValue(string $name, mixed $default = null): mixed
-    {
-        return $this->fieldValue = $this->option->get($this->id() . '.' . $name, $default);
-    }
-
 }

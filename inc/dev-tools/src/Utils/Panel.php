@@ -285,10 +285,33 @@ class Panel
      */
     final public function scripts(string $hook_suffix): void
     {
-        wp_enqueue_style($this->page_slug, $this->uri->getAsset('/css/admin.css'));
+
         if (str_contains($hook_suffix, $this->page_slug)) {
             wp_enqueue_media();
+
+            // Enqueue the color picker scripts and styles.
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
+
+            wp_enqueue_script(
+                $this->page_slug . '-media-uploader',
+                $this->uri->getAsset('js/wp-media-uploader.js'),
+                ['jquery', 'wp-color-picker'],
+                null,
+                true
+            );
+
+            // field-dependencies.js
+            wp_enqueue_script(
+                $this->page_slug . '-field-dependencies',
+                $this->uri->getAsset('js/field-dependencies.js'),
+                ['jquery'],
+                null,
+                true
+            );
         }
+
+        wp_enqueue_style($this->page_slug, $this->uri->getAsset('/css/admin.css'));
         wp_enqueue_script($this->page_slug, $this->uri->getAsset('js/admin.js'), ['jquery'], null, true);
     }
 
