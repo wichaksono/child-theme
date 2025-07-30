@@ -31,6 +31,11 @@ abstract class BaseModule
         $this->option = $option;
     }
 
+    public function shouldAlwaysShow():bool
+    {
+        return false;
+    }
+
     protected function fieldName(string $name): string
     {
         return $this->fieldName = $this->option->getName() . '[' . $this->id() . '][' . $name . ']';

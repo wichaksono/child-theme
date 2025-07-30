@@ -17,8 +17,6 @@ return new class
     public function __construct()
     {
         spl_autoload_register([$this, 'loadClass']);
-
-        (require_once __DIR__ . '/bootstrap.php')->run();
     }
 
     public function loadClass($className): void

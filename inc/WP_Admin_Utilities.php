@@ -62,7 +62,8 @@ class WP_Admin_Utilities {
             'remove_wlwmanifest' => 'Removes wlwmanifest Meta',
             'remove_wp_version' => 'Removes WordPress Version',
             'remove_wp_generator' => 'Removes WordPress Generator',
-            'remove_shortlink' => 'Removes WordPress Shortlink'
+            'remove_shortlink' => 'Removes WordPress Shortlink',
+            'post_revisions' => 'Batasi Revisi Post',
         );
 
         foreach ($fields as $field_id => $field_title) {
