@@ -7,7 +7,7 @@ use NeonWebId\DevTools\Contracts\BaseModule;
 use function print_r;
 use function var_dump;
 
-final class Utilitites extends BaseModule
+final class Utilities extends BaseModule
 {
     public function id(): string
     {
@@ -33,6 +33,17 @@ final class Utilitites extends BaseModule
 
     public function apply(): void
     {
-        // TODO: Implement apply() method.
+        add_action('init', [$this, 'runUtilitiesHandler']);
+    }
+
+    public function runUtilitiesHandler(): void
+    {
+        $utilites = $this->option->get('utilities', []);
+        if (empty($utilites)) {
+            return;
+        }
+
+        $utilitiesHandler = new UtilitiesHandler($utilites);
+        $utilitiesHandler->init();
     }
 }

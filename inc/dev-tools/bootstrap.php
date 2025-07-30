@@ -2,7 +2,7 @@
 
 use NeonWebId\DevTools\Contracts\BaseModule;
 use NeonWebId\DevTools\Modules\Brand;
-use NeonWebId\DevTools\Modules\Utilities\Utilitites;
+use NeonWebId\DevTools\Modules\Utilities\Utilities;
 use NeonWebId\DevTools\Utils\Panel;
 
 /**
@@ -26,7 +26,7 @@ return new class extends Panel {
     {
         return [
             Brand::class,
-            Utilitites::class,
+            Utilities::class,
         ];
     }
 

@@ -24,7 +24,7 @@ final class Brand extends BaseModule
 
     public function content(): void
     {
-        echo $this->fieldName('logo');
+
     }
 
     public function apply(): void

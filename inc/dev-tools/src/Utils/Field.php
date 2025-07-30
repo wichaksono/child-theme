@@ -82,6 +82,13 @@ final class Field
         return sprintf('%s[%s]', $this->name_prefix, $name);
     }
 
+    /**
+     * Renders a text input field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., class, placeholder, default value).
+     */
     public function text(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? '');
@@ -100,6 +107,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a number input field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., class, placeholder, default value, min, max, step).
+     */
     public function number(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? '');
@@ -122,6 +136,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a textarea field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., class, placeholder, default value, rows).
+     */
     public function textarea(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? '');
@@ -142,6 +163,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a WordPress editor field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., rows, default value, media buttons).
+     */
     public function wp_editor(string $name, string $label, array $args = []): void
     {
         $content = $this->getValue($name, $args['default'] ?? '');
@@ -154,6 +182,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a switcher field (checkbox styled as a switch).
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., default value).
+     */
     public function switcher(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? false);
@@ -165,6 +200,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a checkbox field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., default value, label for check).
+     */
     public function checkbox(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? false);
@@ -177,6 +219,14 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a select dropdown field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $options An associative array of options (value => text).
+     * @param array $args Additional arguments for the field (e.g., default value, class).
+     */
     public function select(string $name, string $label, array $options, array $args = []): void
     {
         $currentValue = $this->getValue($name, $args['default'] ?? '');
@@ -189,6 +239,14 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a radio button field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $options An associative array of options (value => text).
+     * @param array $args Additional arguments for the field (e.g., default value).
+     */
     public function radio(string $name, string $label, array $options, array $args = []): void
     {
         $currentValue = $this->getValue($name, $args['default'] ?? '');
@@ -204,6 +262,13 @@ final class Field
         $this->render($name, $label, $radiosHtml, $args);
     }
 
+    /**
+     * Renders a media uploader field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., default value, button text).
+     */
     public function media(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? '');
@@ -216,6 +281,13 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+    /**
+     * Renders a color picker field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., default value).
+     */
     public function color(string $name, string $label, array $args = []): void
     {
         $value = $this->getValue($name, $args['default'] ?? '#000000');
@@ -223,9 +295,18 @@ final class Field
         $this->render($name, $label, $inputHtml, $args);
     }
 
+
+    /**
+     * Renders a repeater field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param array $args Additional arguments for the field (e.g., fields, add button text, description, dependencies).
+     */
     public function repeater(string $name, string $label, array $args = []): void
     {
-        $this->enqueue_repeater_assets();
+        // Maybe enqueue assets here if needed
+        //$this->enqueue_repeater_assets();
         $description = $args['description'] ?? '';
         $dependencies = $args['dependencies'] ?? [];
         $dependencyAttr = !empty($dependencies) ? sprintf('data-dependencies="%s"', esc_attr(json_encode($dependencies))) : '';
@@ -256,6 +337,14 @@ final class Field
         echo '</div>';
     }
 
+    /**
+     * Renders a single row in the repeater field.
+     *
+     * @param string $repeater_name The name of the repeater field.
+     * @param int $index The index of the row.
+     * @param array $sub_fields The sub-fields for this row.
+     * @param array $row_data The data for this row.
+     */
     private function render_repeater_row(string $repeater_name, $index, array $sub_fields, array $row_data): void
     {
         echo '<div class="repeater-row">';
@@ -288,6 +377,9 @@ final class Field
         echo '</div>';
     }
 
+    /**
+     * Enqueues the necessary JavaScript for the repeater field.
+     */
     private function enqueue_repeater_assets(): void
     {
         if (self::$repeater_assets_enqueued) {
@@ -298,6 +390,14 @@ final class Field
         self::$repeater_assets_enqueued = true;
     }
 
+    /**
+     * Renders the HTML structure for a field.
+     *
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param string $inputHtml The HTML for the input element.
+     * @param array $args Additional arguments for the field (e.g., description, dependencies).
+     */
     private function render(string $name, string $label, string $inputHtml, array $args): void
     {
         $description = $args['description'] ?? '';

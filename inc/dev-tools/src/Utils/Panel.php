@@ -317,7 +317,7 @@ class Panel
             wp_enqueue_script(
                 $this->page_slug . '-repeater-field',
                 $this->uri->getAsset('js/repeater-field.js'),
-                ['jquery'],
+                ['jquery', 'jquery-ui-sortable'],
                 null,
                 true
             );
