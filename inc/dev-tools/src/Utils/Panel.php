@@ -75,6 +75,18 @@ class Panel
     protected ?DevOption $option = null;
 
     /**
+     * Instance of Path for handling file paths.
+     * @var Path|null
+     */
+    protected ?Path $path = null;
+
+    /**
+     * Instance of Uri for handling URIs.
+     * @var Uri|null
+     */
+    protected ?Uri $uri = null;
+
+    /**
      * Instance of View for rendering files and assets.
      * @var View|null
      */
@@ -145,7 +157,9 @@ class Panel
     {
         $baseDirectory = get_stylesheet_directory() . '/inc/dev-tools';
         $baseUri       = get_stylesheet_directory_uri() . '/inc/dev-tools';
-        $this->view    = new View($baseDirectory, $baseUri);
+        $this->path    = new Path($baseDirectory);
+        $this->uri     = new Uri($baseUri);
+        $this->view    = new View($this->path, $this->uri);
         $this->option  = new DevOption($this->optionName);
         $this->updater = new ThemeUpdater();
 
@@ -271,11 +285,11 @@ class Panel
      */
     final public function scripts(string $hook_suffix): void
     {
-        wp_enqueue_style($this->page_slug, $this->view->getAsset('/css/admin.css'));
+        wp_enqueue_style($this->page_slug, $this->uri->getAsset('/css/admin.css'));
         if (str_contains($hook_suffix, $this->page_slug)) {
             wp_enqueue_media();
         }
-        wp_enqueue_script($this->page_slug, $this->view->getAsset('js/admin.js'), ['jquery'], null, true);
+        wp_enqueue_script($this->page_slug, $this->uri->getAsset('js/admin.js'), ['jquery'], null, true);
     }
 
     /**

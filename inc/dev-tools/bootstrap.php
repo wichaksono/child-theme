@@ -39,5 +39,19 @@ return new class extends Panel {
     protected function onConstruct(): void
     {
         // This space can be used for future initializations.
+
+        // Uncomment the following lines to enable theme updates
+        //$this->updater->setUpdateServer('https://wp-central.neon.web.id/plugin/')
+        //    ->setHeaders([
+        //        'Authorization' => 'Bearer ' . get_option('dev_tools_api_key', ''),
+        //        'X-Theme-Slug' => get_stylesheet(),
+        //    ])
+        //    ->sslVerify(true)
+        //    ->setTimeout(30)
+        //    ->setParams([
+        //        'slug' => get_stylesheet(),
+        //    ])
+        //    ->setThemeData(wp_get_theme(get_stylesheet()));
+
     }
 };
