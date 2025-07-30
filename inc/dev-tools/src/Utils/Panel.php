@@ -20,6 +20,7 @@ use function esc_url;
 use function get_stylesheet_directory;
 use function get_stylesheet_directory_uri;
 use function in_array;
+use function is_admin;
 use function is_user_logged_in;
 use function key;
 use function print_r;
@@ -515,14 +516,17 @@ class Panel
      */
     final public function apply(): void
     {
-        $this->boot();
-
-        $this->panelRegistered();
-
         foreach ($this->modules as $module) {
             $module->apply();
         }
 
         $this->updater?->init();
+
+        if (! is_admin() ) {
+            return;
+        }
+
+        $this->boot();
+        $this->panelRegistered();
     }
 }
