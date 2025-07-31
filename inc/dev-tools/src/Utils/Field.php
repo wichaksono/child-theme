@@ -8,11 +8,9 @@ use function esc_attr;
 use function esc_html;
 use function esc_url;
 use function json_encode;
-use function print_r;
 use function printf;
 use function selected;
 use function sprintf;
-use function var_dump;
 use function wp_editor;
 use function wp_get_attachment_image_url;
 use function wp_kses_post;
@@ -361,24 +359,17 @@ final class Field
         echo '<div class="repeater-row-header"><span class="repeater-row-handle"></span><button type="button" class="repeater-remove-row">&times;</button></div>';
         echo '<div class="repeater-row-content">';
 
+
         foreach ($sub_fields as $field_args) {
             $field_type  = $field_args['type'] ?? 'text';
             $field_id    = $field_args['id'] ?? '';
             $field_label = $field_args['label'] ?? '';
 
-            // ================================================================= //
-            // PERBAIKAN KUNCI #1: Jangan salah gunakan konstruktor.
-            // Buat instance baru hanya dengan prefix nama yang benar.
-            // ================================================================= //
             $sub_field_prefix   = sprintf('%s[%s]', $repeater_name, $index);
             $sub_field_instance = new Field($this->option, $sub_field_prefix); // Hapus argumen ketiga!
 
             $current_value = $row_data[$field_id] ?? ($field_args['default'] ?? '');
 
-            // ================================================================= //
-            // PERBAIKAN KUNCI #2: Panggil render_field secara langsung.
-            // Ini akan memastikan nilai sementara digunakan dengan benar.
-            // ================================================================= //
             $sub_field_instance->option->setTempRepeaterValue($field_id, $current_value);
             $sub_field_instance->render_field($field_type, $field_id, $field_label, $field_args);
         }

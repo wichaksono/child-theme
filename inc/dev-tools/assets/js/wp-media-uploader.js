@@ -16,18 +16,18 @@ jQuery(document).ready(function ($) {
         return;
     }
 
-    var mediaFrame;
+    let mediaFrame;
 
     // Handles the click event for the "Upload Image" button.
     $(document).on('click', '.media-uploader-button', function (e) {
         e.preventDefault();
 
-        var button = $(this);
-        var wrapper = button.closest('.media-uploader-wrapper');
-        var inputField = wrapper.find('.media-uploader-id');
-        var previewContainer = wrapper.find('.media-uploader-preview');
-        var previewImage = previewContainer.find('img');
-        var removeButton = wrapper.find('.media-remover-button');
+        let button = $(this);
+        let wrapper = button.closest('.media-uploader-wrapper');
+        let inputField = wrapper.find('.media-uploader-id');
+        let previewContainer = wrapper.find('.media-uploader-preview');
+        let previewImage = previewContainer.find('img');
+        let removeButton = wrapper.find('.media-remover-button');
 
         // If the media frame already exists, reopen it.
         if (mediaFrame) {
@@ -50,16 +50,17 @@ jQuery(document).ready(function ($) {
          */
         mediaFrame.on('select', function () {
             // Get the selected attachment from the media frame.
-            var attachment = mediaFrame.state().get('selection').first().toJSON();
+            let attachment = mediaFrame.state().get('selection').first().toJSON();
 
             // Update the hidden input field with the attachment ID.
             inputField.val(attachment.id);
 
             // Set the preview image source. Use 'medium' size if available, otherwise fallback to the full URL.
-            var imageUrl = attachment.sizes && attachment.sizes.medium
+            let imageUrl = attachment.sizes && attachment.sizes.medium
                 ? attachment.sizes.medium.url
                 : attachment.url;
             previewImage.attr('src', imageUrl);
+            previewImage.show();
 
             // Show the preview container and the remove button.
             previewContainer.show();
@@ -74,11 +75,11 @@ jQuery(document).ready(function ($) {
     $(document).on('click', '.media-remover-button', function (e) {
         e.preventDefault();
 
-        var button = $(this);
-        var wrapper = button.closest('.media-uploader-wrapper');
-        var inputField = wrapper.find('.media-uploader-id');
-        var previewContainer = wrapper.find('.media-uploader-preview');
-        var previewImage = previewContainer.find('img');
+        let button = $(this);
+        let wrapper = button.closest('.media-uploader-wrapper');
+        let inputField = wrapper.find('.media-uploader-id');
+        let previewContainer = wrapper.find('.media-uploader-preview');
+        let previewImage = previewContainer.find('img');
 
         // Clear the input field's value.
         inputField.val('');

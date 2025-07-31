@@ -6,6 +6,8 @@ use NeonWebId\DevTools\Contracts\BaseModule;
 use NeonWebId\DevTools\Utils\View;
 use NeonWebId\DevTools\Utils\DevOption;
 
+use function print_r;
+
 final class TelegramNotify extends BaseModule
 {
     public function id(): string
