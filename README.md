@@ -33,22 +33,43 @@ This is a comprehensive WordPress child theme built on GeneratePress that provid
 - **Bootstrap System**: Clean initialization and configuration
 - **Asset Management**: Organized CSS/JS with proper enqueuing
 
-## Installation
+## Requirements
+
+- WordPress 5.0+
+- PHP 8.2+
+- GeneratePress parent theme
+
+## Installation & Setup
 
 1. **Download the theme**
    ```bash
    git clone https://github.com/wichaksono/child-theme.git
    ```
 
-2. **Upload to WordPress**
-    - Upload to `/wp-content/themes/` directory
-    - Or use WordPress admin: Appearance > Themes > Add New > Upload Theme
+2. **Customize for your project**
+   - Rename the `child-theme` folder to your desired theme name
+   - Edit `style.css` and update the theme information:
+     ```css
+     /*
+     Theme Name: Your Theme Name
+     Description: Your theme description
+     Author: Your Name
+     Author URI: https://yourwebsite.com/
+     Template: generatepress
+     Version: 1.0.0
+     Text Domain: your-text-domain
+     */
+     ```
 
-3. **Activate the theme**
-    - Go to WordPress Admin > Appearance > Themes
-    - Find "GP Child Theme" and click "Activate"
+3. **Upload to WordPress**
+   - Upload the renamed folder to `/wp-content/themes/` directory
+   - Or use WordPress admin: Appearance > Themes > Add New > Upload Theme
 
-4. **Configure Dev Tools** (Optional)
+4. **Activate the theme**
+   - Go to WordPress Admin > Appearance > Themes
+   - Find your child theme and click "Activate"
+
+5. **Configure Dev Tools** (Optional)
    ```php
    // In functions.php, uncomment and configure:
    $devTools->showPanelFor([
@@ -60,8 +81,8 @@ This is a comprehensive WordPress child theme built on GeneratePress that provid
 ## File Structure
 
 ```
-child-theme/
-├── style.css                     # Child theme stylesheet (GeneratePress)
+your-theme-name/
+├── style.css                     # Child theme stylesheet (update this)
 ├── functions.php                 # Main functions with dev tools integration
 ├── inc/
 │   ├── dev-tools/                # Developer tools system
@@ -90,7 +111,7 @@ $devTools->showPanelFor([
 
 // Customize panel appearance
 $devTools->setGeneralTab([
-    'title' => __('Development Tools', 'child-theme-name'),
+    'title' => __('Development Tools', 'your-text-domain'),
     'name'  => 'Dev Tools',
     'view'  => 'custom-view',
 ]);
@@ -122,11 +143,6 @@ $field->addDependency('enable_feature', '==', ['1']);
 
 ## Development
 
-### Requirements
-- WordPress 5.0+
-- PHP 7.4+
-- GeneratePress parent theme
-
 ### Adding Custom Tools
 
 1. Create your tool class in `inc/dev-tools/src/`
@@ -141,30 +157,9 @@ All admin JavaScript is properly organized:
 - `repeater-field.js` - Repeater field management
 - `field-dependencies.js` - Dynamic field visibility
 
-## API Reference
+## Documentation
 
-### PostDuplicator Class
-
-```php
-namespace Wichaksono\WordPress\Features;
-
-// Automatically adds duplicate functionality
-$duplicator = new PostDuplicator();
-```
-
-### Dev Tools Panel
-
-```php
-// Show panel for specific users
-$devTools->showPanelFor(['user1', 'user2']);
-
-// Customize general tab
-$devTools->setGeneralTab([
-    'title' => 'Custom Title',
-    'name'  => 'Tab Name',
-    'view'  => 'view-file'
-]);
-```
+For complete documentation, features, and advanced usage examples, please visit the [repository](https://github.com/wichaksono/child-theme) for the most up-to-date information.
 
 ## Contributing
 
@@ -177,11 +172,11 @@ $devTools->setGeneralTab([
 ## Repository Information
 
 - **Created**: July 30, 2025
-- **Last Updated**: 7 minutes ago
+- **Last Updated**: July 31, 2025
 - **Primary Language**: PHP (90.9%)
 - **Secondary Languages**: JavaScript (4.6%), CSS (4.5%)
 - **Parent Theme**: GeneratePress
-- **Text Domain**: gp-premium-theme
+- **Current Version**: 1.0.0
 
 ## Author
 
@@ -194,4 +189,4 @@ This project is open source. No specific license has been set for this repositor
 
 ---
 
-*A professional WordPress child theme with developer tools - Last updated: July 31, 2025*
+*A professional WordPress child theme with developer tools - Updated: July 31, 2025*
