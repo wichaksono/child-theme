@@ -5,12 +5,22 @@ namespace NeonWebId\DevTools\Modules\MenuHider;
 use NeonWebId\DevTools\Contracts\BaseModule;
 
 use function __;
+use function add_action;
 use function preg_replace;
 
 final class MenuHider extends BaseModule
 {
     private array $original_menu = [];
     private array $original_submenu = [];
+
+    protected function onContructor(): void
+    {
+        add_action('admin_menu', function () {
+            global $menu, $submenu;
+            $this->original_menu    = $menu;
+            $this->original_submenu = $submenu;
+        });
+    }
 
     public function id(): string
     {
@@ -29,10 +39,6 @@ final class MenuHider extends BaseModule
 
     public function content(): void
     {
-        // Save original menus to ensure the settings page always shows everything.
-        $this->original_menu    = $GLOBALS['menu'];
-        $this->original_submenu = $GLOBALS['submenu'];
-
         $this->view->render('menu-hider/menu-hider', [
             'field'     => $this->field, // KIRIM OBJEK FIELD SECARA EKSPLISIT
             'all_menus' => $this->get_all_menus_for_display(),

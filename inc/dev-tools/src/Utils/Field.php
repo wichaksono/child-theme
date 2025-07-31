@@ -85,7 +85,7 @@ final class Field
      *
      * @return string The formatted name (e.g., '_dev_tools[utilities][disable_comments]').
      */
-    private function get_prefixed_name(string $name): string
+    public function get_prefixed_name(string $name): string
     {
         return sprintf('%s[%s]', $this->name_prefix, $name);
     }

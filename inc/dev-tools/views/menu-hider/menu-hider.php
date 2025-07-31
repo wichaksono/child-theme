@@ -8,7 +8,6 @@
  *
  * @package NeonWebId\DevTools
  */
-var_dump($all_menus);
 $menu_chunks = array_chunk($all_menus, ceil(count($all_menus) / 3), true);
 ?>
 
@@ -25,13 +24,14 @@ $menu_chunks = array_chunk($all_menus, ceil(count($all_menus) / 3), true);
     .menu-column .submenu-list { margin-top: 0.75rem; padding-left: 1.5rem; }
 </style>
 
-<h3>Admin Menu Hider</h3>
 <p>Pilih item menu dan submenu admin yang ingin Anda sembunyikan. Menu yang dicentang akan disembunyikan.</p>
 
 <div class="menu-hider-controls">
     <button type="button" id="menu-hider-select-all" class="button button-secondary">Pilih Semua</button>
     <button type="button" id="menu-hider-deselect-all" class="button button-secondary">Hapus Semua</button>
 </div>
+
+<input type="hidden" name="<?php echo $field->get_prefixed_name(''); ?>" value="1" />
 
 <div id="menu-hider-container" class="menu-hider-grid">
     <?php foreach ($menu_chunks as $chunk) : ?>

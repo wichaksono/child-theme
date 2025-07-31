@@ -27,6 +27,7 @@ use function print_r;
 use function sanitize_key;
 use function strtolower;
 use function submit_button;
+use function var_dump;
 use function wp_die;
 use function wp_enqueue_media;
 use function wp_enqueue_script;
