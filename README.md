@@ -4,7 +4,7 @@ A powerful WordPress child theme with built-in developer tools and advanced feat
 
 ## Description
 
-This is a comprehensive WordPress child theme built on GeneratePress that provides not only safe customization capabilities but also includes powerful developer tools for enhanced WordPress development workflow. Perfect for developers who need advanced features and client-friendly tools.
+This is a comprehensive WordPress child theme that provides not only safe customization capabilities but also includes powerful developer tools for enhanced WordPress development workflow. Perfect for developers who need advanced features and client-friendly tools.
 
 ## Features
 
@@ -32,12 +32,13 @@ This is a comprehensive WordPress child theme built on GeneratePress that provid
 - **Autoloading**: PSR-4 compliant autoloader
 - **Bootstrap System**: Clean initialization and configuration
 - **Asset Management**: Organized CSS/JS with proper enqueuing
+- **Modular Architecture**: Easy to create and integrate custom modules
 
 ## Requirements
 
 - WordPress 5.0+
 - PHP 8.2+
-- GeneratePress parent theme
+- Compatible parent theme (customize Template field in style.css)
 
 ## Installation & Setup
 
@@ -55,11 +56,12 @@ This is a comprehensive WordPress child theme built on GeneratePress that provid
      Description: Your theme description
      Author: Your Name
      Author URI: https://yourwebsite.com/
-     Template: generatepress
+     Template: your-parent-theme
      Version: 1.0.0
      Text Domain: your-text-domain
      */
      ```
+   - Replace `your-parent-theme` with the actual parent theme folder name
 
 3. **Upload to WordPress**
    - Upload the renamed folder to `/wp-content/themes/` directory
@@ -82,20 +84,25 @@ This is a comprehensive WordPress child theme built on GeneratePress that provid
 
 ```
 your-theme-name/
-├── style.css                     # Child theme stylesheet (update this)
-├── functions.php                 # Main functions with dev tools integration
-├── inc/
-│   ├── dev-tools/                # Developer tools system
-│   │   ├── autoload.php         # PSR-4 autoloader
-│   │   ├── bootstrap.php        # System bootstrap
-│   │   └── assets/
-│   │       ├── css/
-│   │       │   └── admin.css    # 12-column grid + field styling
-│   │       └── js/
-│   │           ├── admin.js     # Main admin functionality
-│   │           ├── repeater-field.js    # Repeater field logic
-│   │           └── field-dependencies.js # Field dependency handler
-│   └── PostDuplicator.php       # Post duplication feature
+├── .gitignore                    # Git ignore file
+├── style.css                    # Child theme stylesheet (update this)
+├── functions.php                # Main functions with dev tools integration
+├── screenshot.png               # Theme screenshot
+├── README.md                    # Documentation
+├── inc/                         # Include files
+│   └── dev-tools/               # Developer tools system
+│       ├── autoload.php        # PSR-4 autoloader
+│       ├── bootstrap.php       # System bootstrap
+│       ├── src/                # Module source files
+│       ├── views/              # Template views
+│       └── assets/
+│           ├── css/
+│           │   └── admin.css   # 12-column grid + field styling
+│           └── js/
+│               ├── admin.js    # Main admin functionality
+│               ├── repeater-field.js   # Repeater field logic
+│               └── field-dependencies.js # Field dependency handler
+└── js/                         # Additional JavaScript files
 ```
 
 ## Usage
@@ -141,14 +148,84 @@ $field->addDependency('enable_feature', '==', ['1']);
 </div>
 ```
 
+## Creating Custom Modules
+
+The dev tools system supports a modular architecture that makes it easy to add custom functionality:
+
+### 1. Create Module Class
+
+Create your module class in `inc/dev-tools/src/Modules/`:
+
+```php
+<?php
+namespace NeonWebId\DevTools\Modules;
+
+class YourCustomModule {
+    
+    public function __construct() {
+        add_action('admin_menu', [$this, 'addAdminMenu']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+    }
+    
+    public function addAdminMenu() {
+        // Add your admin menu logic
+    }
+    
+    public function enqueueAssets() {
+        // Enqueue your CSS/JS assets
+    }
+}
+```
+
+### 2. Register Module
+
+Add your module to the autoloader in `inc/dev-tools/autoload.php`:
+
+```php
+// Register your module class
+$classMap['NeonWebId\\DevTools\\Modules\\YourCustomModule'] = __DIR__ . '/src/Modules/YourCustomModule.php';
+```
+
+### 3. Initialize Module
+
+Initialize your module in `inc/dev-tools/bootstrap.php`:
+
+```php
+use NeonWebId\DevTools\Modules\YourCustomModule;
+
+// Initialize your module
+new YourCustomModule();
+```
+
+### 4. Add Module Views (Optional)
+
+Create view files in `inc/dev-tools/views/` for your module's admin interface:
+
+```php
+// inc/dev-tools/views/your-module-view.php
+<div class="grid-container">
+    <div class="grid-column col-span-12">
+        <h2><?php _e('Your Custom Module', 'your-text-domain'); ?></h2>
+        <!-- Your module content -->
+    </div>
+</div>
+```
+
+### 5. Module Assets
+
+Add module-specific CSS/JS in `inc/dev-tools/assets/`:
+- CSS: `inc/dev-tools/assets/css/your-module.css`
+- JS: `inc/dev-tools/assets/js/your-module.js`
+
 ## Development
 
 ### Adding Custom Tools
 
-1. Create your tool class in `inc/dev-tools/src/`
+1. Create your tool class in `inc/dev-tools/src/Modules/`
 2. Register in the autoloader
 3. Initialize in bootstrap.php
 4. Add views in `inc/dev-tools/views/`
+5. Enqueue assets if needed
 
 ### JavaScript Development
 
@@ -172,10 +249,10 @@ For complete documentation, features, and advanced usage examples, please visit 
 ## Repository Information
 
 - **Created**: July 30, 2025
-- **Last Updated**: July 31, 2025
+- **Last Updated**: July 31, 2025 07:30 UTC
 - **Primary Language**: PHP (90.9%)
 - **Secondary Languages**: JavaScript (4.6%), CSS (4.5%)
-- **Parent Theme**: GeneratePress
+- **Customizable Parent Theme**: Update Template field in style.css
 - **Current Version**: 1.0.0
 
 ## Author
@@ -189,4 +266,4 @@ This project is open source. No specific license has been set for this repositor
 
 ---
 
-*A professional WordPress child theme with developer tools - Updated: July 31, 2025*
+*A professional WordPress child theme with developer tools - Updated: July 31, 2025 07:30 UTC*
