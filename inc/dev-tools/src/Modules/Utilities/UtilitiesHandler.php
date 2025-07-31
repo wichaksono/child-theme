@@ -56,6 +56,9 @@ final class UtilitiesHandler
         if ($this->isEnabled('disable_file_editor')) {
             $this->handleDisableFileEditor();
         }
+        if ($this->isEnabled('duplicate_post')) {
+            PostDuplicator::apply();
+        }
 
         // Security & API
         if ($this->isEnabled('disable_xmlrpc')) {

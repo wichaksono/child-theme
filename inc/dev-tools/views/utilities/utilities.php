@@ -26,6 +26,9 @@
             $field->switcher('disable_wp_cron', 'Disable WP Cron', [
                 'description' => 'Disables the default cron. A server-side cron job is recommended as a replacement.'
             ]);
+            $field->switcher('duplicate_post', 'Enable Post Duplication', [
+                'description' => 'Adds a "Duplicate" link to posts, pages, and custom post types for easy duplication.'
+            ]);
 
             // The main toggle for limiting post revisions.
             $field->switcher('limit_post_revisions_enabled', 'Limit Post Revisions', [

@@ -1,7 +1,8 @@
 <?php
 
-namespace Wichaksono\WordPress\Features;
+namespace NeonWebId\DevTools\Modules\Utilities;
 
+use JetBrains\PhpStorm\NoReturn;
 use WP_Post;
 use WP_Error;
 
@@ -14,16 +15,25 @@ if ( ! defined('ABSPATH')) {
  *
  * Adds a "Duplicate" feature for posts, pages, and custom post types in WordPress.
  *
- * @package Wichaksono\WordPress\Features
+ * @package NeonWebId\DevTools\Modules\Utilities
  */
 final class PostDuplicator
 {
+    private static ?PostDuplicator $instance = null;
+
+    public static function apply():void
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+    }
+
     /**
      * PostDuplicator constructor.
      *
      * Initializes the feature by adding the necessary action and filter hooks.
      */
-    public function __construct()
+    private function __construct()
     {
         // Hook into admin actions to handle the duplication logic.
         add_action('admin_action_wps_duplicate_post', [$this, 'handleDuplicatePostAction']);
@@ -73,6 +83,7 @@ final class PostDuplicator
      *
      * Verifies security and user permissions, then initiates the duplication process.
      */
+    #[NoReturn]
     public function handleDuplicatePostAction(): void
     {
         // 1. Verify a post ID has been supplied.
@@ -113,7 +124,7 @@ final class PostDuplicator
      * @param int $post_id The ID of the post to duplicate.
      * @return int|WP_Error The new post ID on success, or a WP_Error object on failure.
      */
-    private function createDuplicate(int $post_id)
+    private function createDuplicate(int $post_id): WP_Error|int
     {
         $original_post = get_post($post_id);
 
