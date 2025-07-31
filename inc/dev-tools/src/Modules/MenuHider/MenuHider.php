@@ -6,7 +6,10 @@ use NeonWebId\DevTools\Contracts\BaseModule;
 
 use function __;
 use function add_action;
+use function ksort;
 use function preg_replace;
+use function print_r;
+use function var_dump;
 
 final class MenuHider extends BaseModule
 {
@@ -19,6 +22,8 @@ final class MenuHider extends BaseModule
             global $menu, $submenu;
             $this->original_menu    = $menu;
             $this->original_submenu = $submenu;
+
+            ksort($this->original_menu);
         });
     }
 
@@ -63,7 +68,13 @@ final class MenuHider extends BaseModule
     protected function get_all_menus_for_display(): array
     {
         $menu_items     = [];
-        $excluded_slugs = ['separator1', 'separator2', 'separator-last', $GLOBALS['plugin_page']];
+        $excluded_slugs = [
+            'separator1',
+            'separator2',
+            'separator-last',
+            'edit-tags.php?taxonomy=link_category',
+            $GLOBALS['plugin_page']
+        ];
         foreach ($this->original_menu as $item) {
             $slug = $item[2];
             if (empty($item[0]) || in_array($slug, $excluded_slugs, true)) {

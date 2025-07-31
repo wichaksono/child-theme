@@ -28,7 +28,7 @@ final class TelegramNotify extends BaseModule
     public function content(): void
     {
         // Menggunakan view terpisah untuk menjaga kebersihan kode
-        $this->view->render('telegram-notify/settings', [
+        $this->view->render('telegram-notify/telegram-notify', [
             'field'   => $this->field,
         ]);
     }
