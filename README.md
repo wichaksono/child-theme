@@ -4,7 +4,7 @@ A powerful WordPress child theme with built-in developer tools and advanced feat
 
 ## Description
 
-This is a comprehensive WordPress child theme that provides not only safe customization capabilities but also includes powerful developer tools for enhanced WordPress development workflow. Perfect for developers who need advanced features and client-friendly tools.
+This is a comprehensive WordPress child theme that provides not only safe customization capabilities but also includes powerful developer tools for enhanced WordPress development workflow. Perfect for developers who need advanced features and client-friendly tools with a modular architecture.
 
 ## Features
 
@@ -14,11 +14,15 @@ This is a comprehensive WordPress child theme that provides not only safe custom
 - **Customizable Interface**: Override default panel titles, names, and views
 - **Extensible Architecture**: Easy to add new tools and features
 
-### 📋 **Post Duplicator**
-- **One-Click Duplication**: Duplicate posts, pages, and custom post types
-- **Admin Integration**: "Duplicate" link added to row actions
-- **Security First**: Nonce verification and permission checking
-- **Namespace Support**: Clean `Wichaksono\WordPress\Features` namespace
+### 📋 **Available Modules**
+- **Brand Settings**: Centralized brand management and customization
+- **Login Page**: Complete login page customization with branding
+- **Hide WP Login**: Security feature to hide WordPress login page
+- **Menu Hider**: Hide specific admin menu items from users
+- **Utilities**: Collection of useful development utilities including:
+   - **Post Duplicator**: One-click duplication of posts, pages, and custom post types
+   - Additional development and maintenance tools
+- **Telegram Notify**: Integration with Telegram for notifications
 
 ### 🎨 **Advanced Form System**
 - **Field Dependencies**: Dynamic field visibility based on other field values
@@ -29,14 +33,15 @@ This is a comprehensive WordPress child theme that provides not only safe custom
 
 ### 🎯 **Developer Experience**
 - **Modern PHP**: Namespaced classes and modern PHP practices
+- **BaseModule Contract**: Standardized module interface
 - **Autoloading**: PSR-4 compliant autoloader
 - **Bootstrap System**: Clean initialization and configuration
 - **Asset Management**: Organized CSS/JS with proper enqueuing
-- **Modular Architecture**: Easy to create and integrate custom modules
+- **Update Server**: Built-in theme update mechanism (configurable)
 
 ## Requirements
 
-- WordPress 5.0+
+- WordPress 6.8+
 - PHP 8.2+
 - Compatible parent theme (customize Template field in style.css)
 
@@ -92,9 +97,18 @@ your-theme-name/
 ├── inc/                         # Include files
 │   └── dev-tools/               # Developer tools system
 │       ├── autoload.php        # PSR-4 autoloader
-│       ├── bootstrap.php       # System bootstrap
-│       ├── src/                # Module source files
-│       ├── views/              # Template views
+│       ├── bootstrap.php       # System bootstrap & module registration
+│       ├── src/                # Core system source files
+│       │   ├── Contracts/      # Interfaces and contracts
+│       │   ├── Modules/        # Individual module implementations
+│       │   │   ├── Brand/      # Brand settings module
+│       │   │   ├── LoginPage/  # Login page customization
+│       │   │   ├── HideWPLogin/ # Hide WP login module
+│       │   │   ├── MenuHider/  # Menu hiding functionality
+│       │   │   ├── Utilities/  # Development utilities (includes Post Duplicator)
+│       │   │   └── TelegramNotify/ # Telegram notifications
+│       │   └── Utils/          # Utility classes
+│       ├── views/              # Template views for modules
 │       └── assets/
 │           ├── css/
 │           │   └── admin.css   # 12-column grid + field styling
@@ -124,20 +138,26 @@ $devTools->setGeneralTab([
 ]);
 ```
 
-### Post Duplication
+### Available Modules
 
-Simply go to Posts/Pages admin list and click the "Duplicate" link in row actions. The feature automatically:
+Each module provides specific functionality and can be individually configured:
+
+- **Brand**: Centralized brand settings and customization options
+- **LoginPage**: Complete WordPress login page customization
+- **HideWPLogin**: Security feature to obscure WordPress login URL
+- **MenuHider**: Selectively hide admin menu items from specific users
+- **Utilities**: Collection of development and maintenance utilities including:
+   - Post Duplicator with one-click duplication for posts, pages, and custom post types
+   - Additional development tools and helpers
+- **TelegramNotify**: Send notifications to Telegram channels/users
+
+### Post Duplication (Utilities Module)
+
+The Post Duplicator is integrated within the Utilities module. Simply go to Posts/Pages admin list and click the "Duplicate" link in row actions. The feature automatically:
 - Creates an exact copy of the post
 - Updates the title with "(Copy)" suffix
 - Sets status to draft
 - Preserves all meta data and taxonomies
-
-### Form Field Dependencies
-
-```php
-// Field will only show if 'enable_feature' field is checked
-$field->addDependency('enable_feature', '==', ['1']);
-```
 
 ### Using the Grid System
 
@@ -150,82 +170,169 @@ $field->addDependency('enable_feature', '==', ['1']);
 
 ## Creating Custom Modules
 
-The dev tools system supports a modular architecture that makes it easy to add custom functionality:
+The dev tools system uses a contract-based modular architecture with the `BaseModule` interface:
 
 ### 1. Create Module Class
 
-Create your module class in `inc/dev-tools/src/Modules/`:
+Create your module class in `inc/dev-tools/src/Modules/YourModule/`:
 
 ```php
 <?php
-namespace NeonWebId\DevTools\Modules;
 
-class YourCustomModule {
-    
-    public function __construct() {
-        add_action('admin_menu', [$this, 'addAdminMenu']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+namespace NeonWebId\DevTools\Modules\YourModule;
+
+use NeonWebId\DevTools\Contracts\BaseModule;
+use function __;
+
+final class YourModule extends BaseModule
+{
+    public function id(): string
+    {
+        return 'your-module';
     }
-    
-    public function addAdminMenu() {
-        // Add your admin menu logic
+
+    public function title(): string
+    {
+        return __('Your Module Title', 'dev-tools');
     }
-    
-    public function enqueueAssets() {
-        // Enqueue your CSS/JS assets
+
+    public function name(): string
+    {
+        return 'Your Module';
+    }
+
+    public function content(): void
+    {
+        $this->view->render('your-module/settings', [
+            'field' => $this->field,
+        ]);
+    }
+
+    public function apply(): void
+    {
+        $options = $this->option->get($this->id(), []);
+
+        // Run handler only if at least one option is set
+        if (!empty(array_filter($options))) {
+            new YourModuleHandler($options);
+        }
     }
 }
 ```
 
 ### 2. Register Module
 
-Add your module to the autoloader in `inc/dev-tools/autoload.php`:
+Add your module to the bootstrap in `inc/dev-tools/bootstrap.php`:
 
 ```php
-// Register your module class
-$classMap['NeonWebId\\DevTools\\Modules\\YourCustomModule'] = __DIR__ . '/src/Modules/YourCustomModule.php';
+protected function modules(): array
+{
+    return [
+        Brand::class,
+        LoginPage::class,
+        HideWPLogin::class,
+        MenuHider::class,
+        Utilities::class,
+        TelegramNotify::class,
+        YourModule::class, // Add your module here
+    ];
+}
 ```
 
-### 3. Initialize Module
+### 3. Create Module Handler (Optional)
 
-Initialize your module in `inc/dev-tools/bootstrap.php`:
+Create a handler class for your module's functionality:
 
 ```php
-use NeonWebId\DevTools\Modules\YourCustomModule;
+<?php
 
-// Initialize your module
-new YourCustomModule();
+namespace NeonWebId\DevTools\Modules\YourModule;
+
+final class YourModuleHandler
+{
+    private array $options;
+
+    public function __construct(array $options)
+    {
+        $this->options = $options;
+        $this->init();
+    }
+
+    private function init(): void
+    {
+        // Initialize your module's functionality
+        add_action('init', [$this, 'handleModuleActions']);
+    }
+
+    public function handleModuleActions(): void
+    {
+        // Your module logic here
+    }
+}
 ```
 
-### 4. Add Module Views (Optional)
+### 4. Create Module View
 
-Create view files in `inc/dev-tools/views/` for your module's admin interface:
+Create view files in `inc/dev-tools/views/your-module/`:
 
 ```php
-// inc/dev-tools/views/your-module-view.php
+<!-- inc/dev-tools/views/your-module/settings.php -->
 <div class="grid-container">
     <div class="grid-column col-span-12">
-        <h2><?php _e('Your Custom Module', 'your-text-domain'); ?></h2>
-        <!-- Your module content -->
+        <h2><?php _e('Your Module Settings', 'dev-tools'); ?></h2>
+        
+        <?php echo $field->text([
+            'id' => 'setting_name',
+            'label' => __('Setting Name', 'dev-tools'),
+            'description' => __('Description of this setting', 'dev-tools'),
+        ]); ?>
+        
     </div>
 </div>
 ```
 
-### 5. Module Assets
+## Module Architecture
 
-Add module-specific CSS/JS in `inc/dev-tools/assets/`:
-- CSS: `inc/dev-tools/assets/css/your-module.css`
-- JS: `inc/dev-tools/assets/js/your-module.js`
+### BaseModule Contract
+
+All modules must implement the `BaseModule` contract with these required methods:
+
+- `id()`: Unique module identifier
+- `title()`: Module title for admin display
+- `name()`: Short module name
+- `content()`: Render module's admin interface
+- `apply()`: Execute module's functionality
+
+### Module Structure
+
+Each module should follow this structure:
+```
+src/Modules/YourModule/
+├── YourModule.php          # Main module class
+├── YourModuleHandler.php   # Module functionality handler
+└── views/                  # Module-specific views (optional)
+```
 
 ## Development
 
-### Adding Custom Tools
+### Theme Updates
 
-1. Create your tool class in `inc/dev-tools/src/Modules/`
-2. Register in the autoloader
-3. Initialize in bootstrap.php
-4. Add views in `inc/dev-tools/views/`
-5. Enqueue assets if needed
+The theme includes a built-in update mechanism. To enable:
+
+```php
+// In bootstrap.php onConstruct() method
+$this->updater->setUpdateServer('https://your-update-server.com/')
+    ->setHeaders([
+        'Authorization' => 'Bearer ' . get_option('your_api_key', ''),
+        'X-Theme-Slug' => get_stylesheet(),
+    ])
+    ->sslVerify(true)
+    ->setTimeout(30)
+    ->setParams([
+        'slug' => get_stylesheet(),
+    ])
+    ->setThemeData(wp_get_theme(get_stylesheet()));
+```
 
 ### JavaScript Development
 
@@ -249,7 +356,7 @@ For complete documentation, features, and advanced usage examples, please visit 
 ## Repository Information
 
 - **Created**: July 30, 2025
-- **Last Updated**: July 31, 2025 07:30 UTC
+- **Last Updated**: July 31, 2025 07:35 UTC
 - **Primary Language**: PHP (90.9%)
 - **Secondary Languages**: JavaScript (4.6%), CSS (4.5%)
 - **Customizable Parent Theme**: Update Template field in style.css
@@ -266,4 +373,4 @@ This project is open source. No specific license has been set for this repositor
 
 ---
 
-*A professional WordPress child theme with developer tools - Updated: July 31, 2025 07:30 UTC*
+*A professional WordPress child theme with developer tools - Updated: July 31, 2025 07:35 UTC*
