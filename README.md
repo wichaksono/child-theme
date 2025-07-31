@@ -7,6 +7,30 @@ A powerful WordPress child theme with built-in developer tools and advanced feat
 This is a comprehensive WordPress child theme that provides not only safe customization capabilities but also includes powerful developer tools for enhanced WordPress development workflow. Perfect for developers who need advanced features and client-friendly tools with a modular architecture.
 
 ## Features
+### General
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/d89c7e67-d512-486e-a895-ae85074c2d84" />
+
+### Brand Settings
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/e8ed4e00-d94f-49e4-8c39-9747b347a1de" />
+
+### Login Page Style
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/a7d7b953-11b8-4b0c-9651-69e4e66f32ff" />
+
+### Hide WP Login
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/18b02c69-16d0-48ec-9fa6-d88502b29ae2" />
+
+### Menu Hider
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/3ffe1e58-5943-47af-88e1-7a50b7c83b59" />
+
+### Utilities
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/c8421119-ddda-4849-af71-f9744cfcb368" />
+
+### Telegram Notification
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/e9b0539a-6a6b-4438-b1af-9a7793afd985" />
+
+### System Info
+<img width="1920" height="840" alt="image" src="https://github.com/user-attachments/assets/cd1fa615-e0ff-4df9-ad3e-6379a0a6d013" />
+
 
 ### 🛠️ **Dev Tools Panel**
 - **Admin Panel**: Custom developer panel with configurable tabs and views
@@ -366,6 +390,9 @@ For complete documentation, features, and advanced usage examples, please visit 
 
 **Wichaksono** ([@wichaksono](https://github.com/wichaksono))
 - Repository: [wichaksono/child-theme](https://github.com/wichaksono/child-theme)
+- Website: [neonwebid](https://neon.web.id)
+- Facebook: [wichaksono](https://www.facebook.com/bocahapi)
+- Facebook NeonWebId: [neonwebid](https://www.facebook.com/neonwebid/)
 
 ## License
 
