@@ -20,7 +20,7 @@ final class HideWPLogin extends BaseModule
 
     public function name(): string
     {
-        return 'Hide Login';
+        return 'Hide WP Login';
     }
 
     public function content(): void

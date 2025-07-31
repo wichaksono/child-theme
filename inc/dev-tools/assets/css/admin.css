@@ -250,7 +250,7 @@
     cursor: move;
     width: 20px;
     height: 20px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23888'%3E%3Cpath d='M10 3a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-6-9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm9-12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktYXJyb3ctZG93bi11cCIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS41IDE1YS41LjUgMCAwIDAgLjUtLjVWMi43MDdsMy4xNDYgMy4xNDdhLjUuNSAwIDAgMCAuNzA4LS43MDhsLTQtNGEuNS41IDAgMCAwLS43MDggMGwtNCA0YS41LjUgMCAxIDAgLjcwOC43MDhMMTEgMi43MDdWMTQuNWEuNS41IDAgMCAwIC41LjVtLTctMTRhLjUuNSAwIDAgMSAuNS41djExLjc5M2wzLjE0Ni0zLjE0N2EuNS41IDAgMCAxIC43MDguNzA4bC00IDRhLjUuNSAwIDAgMS0uNzA4IDBsLTQtNGEuNS41IDAgMCAxIC43MDgtLjcwOEw0IDEzLjI5M1YxLjVhLjUuNSAwIDAgMSAuNS0uNSIvPgo8L3N2Zz4=");
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -288,4 +288,55 @@
 
 .repeater-footer {
     margin-top: 15px;
+}
+
+/* --- Repeater Collapsible Styles --- */
+.repeater-row-header {
+    cursor: pointer; /* Memberi tahu pengguna bahwa header bisa diklik */
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px 4px 0 0;
+    user-select: none; /* Mencegah teks terseleksi saat diklik */
+}
+
+.repeater-row.is-collapsed .repeater-row-header {
+    border-radius: 4px; /* Sudut membulat penuh saat tertutup */
+}
+
+.repeater-row-title {
+    font-weight: 600;
+    margin-left: 8px;
+    flex-grow: 1; /* Membuat judul mengisi ruang yang tersedia */
+    color: #2c3338;
+}
+
+.repeater-row-toggle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #50575e; /* Panah ke bawah */
+    margin-right: 15px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.repeater-row.is-collapsed .repeater-row-toggle {
+    transform: rotate(-90deg); /* Panah ke samping saat tertutup */
+}
+
+.repeater-row-content {
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: #fff;
+    transition: visibility 0.1s, opacity 0.1s;
+}
+
+/* Sembunyikan konten saat baris tertutup */
+.repeater-row.is-collapsed .repeater-row-content {
+    display: none;
 }

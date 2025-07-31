@@ -298,7 +298,7 @@ class Panel
             wp_enqueue_script(
                 $this->page_slug . '-media-uploader',
                 $this->uri->getAsset('js/wp-media-uploader.js'),
-                ['jquery', 'wp-color-picker'],
+                ['jquery'],
                 null,
                 true
             );
@@ -322,8 +322,19 @@ class Panel
             );
         }
 
-        wp_enqueue_style($this->page_slug, $this->uri->getAsset('/css/admin.css'));
-        wp_enqueue_script($this->page_slug, $this->uri->getAsset('js/admin.js'), ['jquery'], null, true);
+        wp_enqueue_style(
+            $this->page_slug,
+            $this->uri->getAsset('/css/admin.css'),
+            ['wp-color-picker']
+        );
+
+        wp_enqueue_script(
+            $this->page_slug,
+            $this->uri->getAsset('js/admin.js'),
+            ['jquery', 'wp-color-picker'],
+            null,
+            true
+        );
     }
 
     /**

@@ -3,6 +3,7 @@
 use NeonWebId\DevTools\Contracts\BaseModule;
 use NeonWebId\DevTools\Modules\Brand\Brand;
 use NeonWebId\DevTools\Modules\HideWPLogin\HideWPLogin;
+use NeonWebId\DevTools\Modules\LoginPage\LoginPage;
 use NeonWebId\DevTools\Modules\TelegramNotify\TelegramNotify;
 use NeonWebId\DevTools\Modules\Utilities\Utilities;
 use NeonWebId\DevTools\Utils\Panel;
@@ -28,6 +29,7 @@ return new class extends Panel {
     {
         return [
             Brand::class,
+            LoginPage::class,
             HideWPLogin::class,
             Utilities::class,
             TelegramNotify::class,

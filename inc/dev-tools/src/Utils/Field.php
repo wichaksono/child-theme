@@ -355,18 +355,35 @@ final class Field
 
     private function render_repeater_row(string $repeater_name, $index, array $sub_fields, array $row_data): void
     {
-        echo '<div class="repeater-row">';
-        echo '<div class="repeater-row-header"><span class="repeater-row-handle"></span><button type="button" class="repeater-remove-row">&times;</button></div>';
+        // Tentukan apakah baris ini baru (tidak ada data) atau sudah ada.
+        // Baris baru akan terbuka, baris lama akan tertutup secara default.
+        $is_new_row = empty($row_data);
+        $row_class = 'repeater-row' . ($is_new_row ? '' : ' is-collapsed');
+
+        // Ambil nilai dari field pertama untuk dijadikan judul.
+        $title_field_id = $sub_fields[0]['id'] ?? '';
+        $row_title = !empty($title_field_id) && !empty($row_data[$title_field_id]) ? esc_html($row_data[$title_field_id]) : 'New Item';
+
+        echo '<div class="' . esc_attr($row_class) . '">';
+
+        // Header yang sudah ditingkatkan dengan judul dan tombol toggle
+        echo '<div class="repeater-row-header">';
+        echo '  <span class="repeater-row-handle"></span>';
+        echo '  <span class="repeater-row-title">' . $row_title . '</span>';
+        echo '  <span class="repeater-row-toggle"></span>'; // Tombol collapse/expand
+        echo '  <button type="button" class="repeater-remove-row">&times;</button>';
+        echo '</div>';
+
+        // Konten yang bisa di-collapse
         echo '<div class="repeater-row-content">';
 
-
         foreach ($sub_fields as $field_args) {
-            $field_type  = $field_args['type'] ?? 'text';
-            $field_id    = $field_args['id'] ?? '';
+            $field_type = $field_args['type'] ?? 'text';
+            $field_id   = $field_args['id'] ?? '';
             $field_label = $field_args['label'] ?? '';
 
-            $sub_field_prefix   = sprintf('%s[%s]', $repeater_name, $index);
-            $sub_field_instance = new Field($this->option, $sub_field_prefix); // Hapus argumen ketiga!
+            $sub_field_prefix = sprintf('%s[%s]', $repeater_name, $index);
+            $sub_field_instance = new Field($this->option, $sub_field_prefix);
 
             $current_value = $row_data[$field_id] ?? ($field_args['default'] ?? '');
 
