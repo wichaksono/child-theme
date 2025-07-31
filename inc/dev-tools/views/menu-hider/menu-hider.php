@@ -40,7 +40,7 @@ $menu_chunks = array_chunk($all_menus, ceil(count($all_menus) / 3), true);
                 <?php foreach ($chunk as $menu) :; ?>
                     <li class="menu-item">
                         <div class="parent-menu">
-                            <?php $field->checkbox( // PERBAIKAN: Gunakan $field, bukan $module->field
+                            <?php $field->checkbox(
                                 $menu['slug'],
                                 $menu['title'],
                                 [
@@ -53,7 +53,7 @@ $menu_chunks = array_chunk($all_menus, ceil(count($all_menus) / 3), true);
                             <ul class="submenu-list">
                                 <?php foreach ($menu['sub'] as $sub_menu) : ?>
                                     <li>
-                                        <?php $field->checkbox( // PERBAIKAN: Gunakan $field, bukan $module->field
+                                        <?php $field->checkbox(
                                             $sub_menu['slug'],
                                             $sub_menu['title'],
                                             [
