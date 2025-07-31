@@ -8,7 +8,7 @@
  *
  * @package NeonWebId\DevTools
  */
-
+var_dump($all_menus);
 $menu_chunks = array_chunk($all_menus, ceil(count($all_menus) / 3), true);
 ?>
 

@@ -5,6 +5,7 @@ namespace NeonWebId\DevTools\Modules\MenuHider;
 use function in_array;
 use function remove_menu_page;
 use function remove_submenu_page;
+use function var_dump;
 
 /**
  * Handles the logic of hiding WordPress admin menus based on provided options.
@@ -50,7 +51,7 @@ final class MenuHiderHandler
         // Hide parent menus
         foreach ($menu as $menu_item) {
             $slug = $menu_item[2];
-            if (in_array($slug, $this->hidden_menus, true)) {
+            if (isset($this->hidden_menus[$slug]) &&  $this->hidden_menus[$slug]) {
                 remove_menu_page($slug);
             }
         }
@@ -59,7 +60,7 @@ final class MenuHiderHandler
         foreach ($submenu as $parent_slug => $sub_items) {
             foreach ($sub_items as $sub_item) {
                 $sub_slug = $sub_item[2];
-                if (in_array($sub_slug, $this->hidden_menus, true)) {
+                if (isset($this->hidden_menus[$sub_slug]) &&  $this->hidden_menus[$sub_slug]) {
                     remove_submenu_page($parent_slug, $sub_slug);
                 }
             }
