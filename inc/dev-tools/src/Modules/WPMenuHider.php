@@ -4,7 +4,7 @@ namespace NeonWebId\DevTools\Modules;
 
 use NeonWebId\DevTools\Contracts\BaseModule;
 
-final class MenuHider extends BaseModule
+final class WPMenuHider extends BaseModule
 {
     public function id(): string
     {

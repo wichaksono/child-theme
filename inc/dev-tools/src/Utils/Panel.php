@@ -23,6 +23,7 @@ use function in_array;
 use function is_admin;
 use function is_user_logged_in;
 use function key;
+use function print_r;
 use function sanitize_key;
 use function strtolower;
 use function submit_button;
